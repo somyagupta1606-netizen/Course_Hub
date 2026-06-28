@@ -205,10 +205,29 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+// Get Instructor Courses
+const getInstructorCourses = async (req, res) => {
+  try {
+    let courses = await courseModel
+      .find({ instructorId: req.userId })
+      .populate("category", "categoryName");
+
+    if (courses.length === 0) {
+      return res.status(404).json({ msg: "No Courses Found" });
+    }
+
+    return res.status(200).json({ courses });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createCourse,
   getAllCourses,
   getCourseById,
   updateCourse,
   deleteCourse,
+  getInstructorCourses,
 };
